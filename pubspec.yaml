@@ -5,9 +5,12 @@ dependencies:
   mustache: any
   path: any
   quiver: any
-  redstone: any
+  redstone: "< 0.6.0"
   redstone_mapper: any
-  redstone_mapper_mongo: any
+  redstone_rethinkdb: any
+  rethinkdb_driver: any
+  postgresql: any
+  uuid: any
   redstone_mvc: any
   shelf: any
   redstone_utilities: any

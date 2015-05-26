@@ -1,27 +1,45 @@
+library garesco.email.server;
+
 import 'package:mustache/mustache.dart';
 import 'package:redstone/server.dart' as app;
 import 'dart:io' as io;
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:redstone/query_map.dart';
 import 'package:redstone_mapper/mapper.dart';
-import 'package:redstone_mapper_mongo/manager.dart';
 import 'package:redstone_mapper/plugin.dart';
 import 'package:path/path.dart' as path;
 import 'package:cookies/cookies.dart' as ck;
 import 'package:redstone_mvc/redstone_mvc.dart' as mvc;
-import 'garesco_email_server.dart';
 import 'package:di/di.dart';
-import 'package:redstone_utilities/redstone_utilities.dart';
 import 'package:garesco_email/garesco_email.dart';
+import 'package:uuid/uuid.dart' as uuid;
+import 'dart:async';
+import 'package:redstone_rethinkdb/redstone_rethinkdb.dart';
+import 'package:rethinkdb_driver/rethinkdb_driver.dart';
+
+part 'services/rest/maquina.dart';
+part 'services/rest/categoria.dart';
+part 'services/rest/email.dart';
 
 main() async {
   //var dbManager = new MongoDbManager('mongodb://192.168.59.103:8095/garesco_email', poolSize: 3);
 
-  app.addPlugin(getMapperPlugin());
+  /*
+  var config = new ConfigRethink(
+    host: "192.168.59.103",
+    tables: [
+      new TableConfig('maquinas')
+    ]
+  );
+  await setupRethink(config);
+
+  var dbManager = new RethinkDbManager.fromCongif(config);
+  */
+
+  app.addPlugin(getMapperPlugin()); //dbManager));
   app.addPlugin(mvc.mvcPluggin);
 
-  app.addModule(new Module()
-    ..bind(MongoConnection));
+  app.addModule(new Module());
 
   app.setupConsoleLog();
   app.start(port: 9090);
