@@ -1,0 +1,18 @@
+name: garesco_email
+description: A sample web application
+dependencies:
+  cookies: any
+  mustache: any
+  path: any
+  quiver: any
+  redstone: any
+  redstone_mapper: any
+  redstone_mapper_mongo: any
+  redstone_mvc: any
+  shelf: any
+  redstone_utilities: any
+  di: any
+transformers:
+- redstone_mapper
+- $dart2js:
+    $exclude: bin
