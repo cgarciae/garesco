@@ -6,11 +6,21 @@ class MaquinaServices extends RethinkServices<Maquina> {
   MaquinaServices() : super('maquinas');
   MaquinaServices.fromConnection (Connection conn) : super.fromConnection('maquinas', conn);
 
-  @mvc.DataController('/agregar', methods: const [app.POST])
-  Future<Maquina> agregar(@Decode() Maquina maquina) async {
+  @mvc.ViewController('/agregar', methods: const [app.GET])
+  agregarForm() async {
+    return {};
+  }
+
+  @mvc.ViewController('/agregar', filePath: '/maquinas/maquina', methods: const [app.POST])
+  agregar(@Decode(from: const [app.FORM]) Maquina maquina) async {
     maquina.id = new uuid.Uuid().v1();
     await insertNow(maquina);
-    return maquina;
+    app.redirect("/maquinas/${maquina.id}");
+  }
+
+  @mvc.ViewController("/:id", filePath: '/maquinas/maquina', methods: const [app.GET])
+  Future<Maquina> getMaquina (String id) async {
+    return getNow(id);
   }
 
   @mvc.DataController('/nueva', methods: const [app.POST])
@@ -22,9 +32,6 @@ class MaquinaServices extends RethinkServices<Maquina> {
     ..precio = ""
     ..venta = ""
     ..link = "");
-
-  @mvc.DataController('/:id')
-  Future<Maquina> obtener(String id) => getNow(id);
 
   @mvc.DataController('/:id', methods: const [app.PUT])
   Future<Maquina> actualizar(String id, @Decode() Maquina maquina) async {

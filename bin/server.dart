@@ -17,14 +17,13 @@ import 'dart:async';
 import 'package:redstone_rethinkdb/redstone_rethinkdb.dart';
 import 'package:rethinkdb_driver/rethinkdb_driver.dart';
 
-part 'services/rest/maquina.dart';
-part 'services/rest/categoria.dart';
-part 'services/rest/email.dart';
+part 'services/mvc/maquina.dart';
+part 'services/mvc/categoria.dart';
+part 'services/mvc/email.dart';
 
 main() async {
   //var dbManager = new MongoDbManager('mongodb://192.168.59.103:8095/garesco_email', poolSize: 3);
 
-  /*
   var config = new ConfigRethink(
     host: "192.168.59.103",
     tables: [
@@ -34,9 +33,8 @@ main() async {
   await setupRethink(config);
 
   var dbManager = new RethinkDbManager.fromCongif(config);
-  */
 
-  app.addPlugin(getMapperPlugin()); //dbManager));
+  app.addPlugin(getMapperPlugin(dbManager));
   app.addPlugin(mvc.mvcPluggin);
 
   app.addModule(new Module());

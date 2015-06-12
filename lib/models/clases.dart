@@ -66,7 +66,9 @@ class Maquina extends Ref {
   @Field() String descripcion;
   @Field() String imagenUrl;
   @Field() String link;
-  @Field() bool linkVideo;
+  @Field() String linkVideo;
+  @Field() List<FileDb> imagenes;
+  @Field() String get primeraImagen => imagenes.first.href;
 
   String _verMas;
   @Field() set verMas(String s) => _verMas = s;
