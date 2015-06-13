@@ -68,7 +68,10 @@ class Maquina extends Ref {
   @Field() String link;
   @Field() String linkVideo;
   @Field() List<FileDb> imagenes;
-  @Field() String get primeraImagen => imagenes.first.href;
+  @Field() String get primeraImagen =>
+    imagenes != null && imagenes.length > 0 ?
+    imagenes.first.href :
+    null;
 
   String _verMas;
   @Field() set verMas(String s) => _verMas = s;
@@ -81,6 +84,17 @@ class Categoria extends Ref {
   @Field() String heading;
   @Field() String descripcion;
   @Field() Link link;
+}
+
+class FileDb extends Ref
+{
+  @Field() String get href => id != null ? localHost + 'files/$id' : null;
+
+  @Field() String system;
+  @Field() String filename;
+  @Field() String type;
+  //@Field() User owner;
+  @Field() String contentType;
 }
 
 class Link {

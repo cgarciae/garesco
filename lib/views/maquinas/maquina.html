@@ -31,46 +31,58 @@
 
             <div class="row">
                 <div class="col s6 card">
-                    <ul>
-                        <li><b>Precio:</b> {{precio}}</li>
-                        <li><b>Pais:</b> {{pais}}-{{venta}}</li>
-                        <li><b>Año:</b> {{aNo}}</li>
-                    </ul>
+                    <div class="card-content">
+                        <ul>
+                            <li><b>Precio:</b> {{precio}}</li>
+                            <li><b>Pais:</b> {{pais}}-{{venta}}</li>
+                            <li><b>Año:</b> {{aNo}}</li>
+                        </ul>
+                    </div>
                 </div>
+
+                {{# primeraImagen}}
                 <div class="col s6 card">
                     <!-- Modal Trigger -->
-                    {{# primeraImagen}}
                     <a href="#modal1">
-
                         <img src="{{primeraImagen}}">
                     </a>
 
                     <!-- Modal Structure -->
                     <div id="modal1" class="modal">
                         <div class="modal-content">
-                            <h4>Modal Header</h4>
-                            <p>A bunch of text</p>
+                            <div class="slider">
+                                <ul class="slides">
+                                    {{# imagenes}}
+                                    <li>
+                                        <img src="{{href}}"> <!-- random image -->
+                                        <!--div class="caption left-align">
+                                            <h3>Left Aligned Caption</h3>
+                                            <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                                        </div-->
+                                    </li>
+                                    {{/ imagenes}}
+                                </ul>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
                         </div>
                     </div>
-                    {{/ primeraImagen}}
                 </div>
+                {{/ primeraImagen}}
             </div>
 
-            <h6>Descripcion</h6>
-            <div class="row">
 
-                <div class="col s12 card">
-                    <ul>
-                        <li><b>Precio:</b> {{precio}}</li>
-                        <li><b>Pais:</b> {{pais}}-{{venta}}</li>
-                        <li><b>Año:</b> {{aNo}}</li>
-                    </ul>
-                </div>
-                <div class="col s6">
+            <div class="row card">
+                <div class="card-content">
+                    <span class="card-title grey-text text-darken-4">Descripcion</span>
 
+                    <div class="col s12 ">
+                        <p>{{descripcion}}</p>
+                    </div>
+                    <div class="col s6">
+
+                    </div>
                 </div>
             </div>
         </div>

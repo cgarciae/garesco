@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head lang="en">
     <meta charset="UTF-8">
     <title></title>
@@ -22,59 +22,67 @@
         <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
     </div>
 </nav>
+
+
 <div class="section no-pad-bot" id="index-banner">
-    <div class="container">
+    <div class="container" class="col s12">
         <br><br>
-        <div>
-            <h5>Agregar Nueva Maquina</h5>
-            <div class="row">
-                <form class="col s12" method="post">
-                    <div class="row">
-                        <div class="input-field col s6">
-                            <input id="modelo" type="text" class="validate" name="modelo">
-                            <label for="modelo">modelo</label>
-                        </div>
-                        <div class="input-field col s6">
-                            <input id="precio" type="text" class="validate" name="precio">
-                            <label for="precio">precio</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
-                            <input id="venta" type="text" class="validate" name="venta">
-                            <label for="venta">venta</label>
-                        </div>
-                        <div class="input-field col s6">
-                            <input id="pais" type="text" class="validate" name="pais">
-                            <label for="pais">pais</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
-                            <input id="aNo" type="text" class="validate" name="aNo">
-                            <label for="aNo">año</label>
-                        </div>
-                        <div class="input-field col s6">
-                            <input id="linkVideo" type="text" class="validate" name="linkVideo">
-                            <label for="linkVideo">link video</label>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="input-field col s6">
-                            <input id="link" type="text" class="validate" name="link">
-                            <label for="link">link</label>
+        <h5>{{modelo}}</h5>
+
+        <div class="row">
+            <div class="col s6 card">
+                <div class="card-content">
+                    <ul>
+                        <li><b>Precio:</b> {{precio}}</li>
+                        <li><b>Pais:</b> {{pais}}-{{venta}}</li>
+                        <li><b>Año:</b> {{aNo}}</li>
+                    </ul>
+                </div>
+            </div>
+
+            {{# primeraImagen}}
+            <div class="col s6 card">
+                <!-- Modal Trigger -->
+                <a href="#modal1">
+                    <img src="{{primeraImagen}}">
+                </a>
+
+                <!-- Modal Structure -->
+                <div id="modal1" class="modal">
+                    <div class="modal-content">
+                        <div class="slider">
+                            <ul class="slides">
+                                {{# imagenes}}
+                                <li>
+                                    <img src="{{href}}"> <!-- random image -->
+                                    <!--div class="caption left-align">
+                                        <h3>Left Aligned Caption</h3>
+                                        <h5 class="light grey-text text-lighten-3">Here's our small slogan.</h5>
+                                    </div-->
+                                </li>
+                                {{/ imagenes}}
+                            </ul>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="input-field col s12">
-                            <textarea id="descripcion" class="validate" name="descripcion"></textarea>
-                            <label for="descripcion">descripcion</label>
-                        </div>
+                    <div class="modal-footer">
+                        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
                     </div>
-                    <button class="btn waves-effect waves-light" type="submit" name="action">Submit
-                        <i class="mdi-content-send right"></i>
-                    </button>
-                </form>
+                </div>
+            </div>
+            {{/ primeraImagen}}
+        </div>
+
+
+        <div class="row card">
+            <div class="card-content">
+                <span class="card-title grey-text text-darken-4">Descripcion</span>
+
+                <div class="col s12 ">
+                    <p>{{descripcion}}</p>
+                </div>
+                <div class="col s6">
+
+                </div>
             </div>
         </div>
     </div>
@@ -117,23 +125,14 @@
         </div>
     </div>
 </footer>
-
-
-    <!--form method="POST">
-        <input type="text" name="venta">
-        <input type="text" name="pais">
-        <input type="text" name="precio">
-        <input type="text" name="modelo">
-        <input type="text" name="aNo">
-        <input type="text" name="descripcion">
-        <input type="text" name="imagenUrl">
-        <input type="text" name="link">
-        <input type="text" name="linkVideo">
-    </form-->
-
-
-    <!-- Compiled and minified JavaScript -->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.96.1/js/materialize.min.js"></script>
+<script>
+    $(document).ready(function(){
+        // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+        $('.modal-trigger').leanModal();
+    });
+</script>
 </body>
 </html>

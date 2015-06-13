@@ -1,24 +1,46 @@
 part of garesco.email.server;
 
-@mvc.GroupController('/maquinas', root: '/lib/views')
-class MaquinaServices extends RethinkServices<Maquina> {
+@mvc.GroupController('/admin/maquinas', root: '/lib/views')
+class AdminMaquinaServices extends RethinkServices<Maquina> {
 
-  MaquinaServices() : super('maquinas');
-  MaquinaServices.fromConnection (Connection conn) : super.fromConnection('maquinas', conn);
+  FileServices fileServices;
+
+  AdminMaquinaServices(this.fileServices) : super('maquinas');
+  AdminMaquinaServices.fromConnection (Connection conn) : super.fromConnection('maquinas', conn);
 
   @mvc.ViewController('/agregar', methods: const [app.GET])
   agregarForm() async {
     return {};
   }
 
-  @mvc.ViewController('/agregar', filePath: '/maquinas/maquina', methods: const [app.POST])
-  agregar(@Decode(from: const [app.FORM]) Maquina maquina) async {
+  @mvc.ViewController('/agregar', methods: const [app.POST], allowMultipartRequest: true)
+  agregar(@app.Body(app.FORM) QueryMap form) async {
+    Maquina maquina = decode(form, Maquina);
     maquina.id = new uuid.Uuid().v1();
+
+
+    if (form.archivosImagenes != null) {
+
+
+
+      List<app.HttpBodyFileUpload> images = form.archivosImagenes is List ?
+        form.archivosImagenes :
+        [form.archivosImagenes];
+
+
+
+      maquina.imagenes = new List<FileDb>();
+      for (var file in images) {
+        var fileDb = await fileServices.newFile(file);
+        maquina.imagenes.add(fileDb);
+      }
+    }
     await insertNow(maquina);
-    app.redirect("/maquinas/${maquina.id}");
+
+    app.redirect("/admin/maquinas/${maquina.id}");
   }
 
-  @mvc.ViewController("/:id", filePath: '/maquinas/maquina', methods: const [app.GET])
+  @mvc.ViewController("/:id", filePath: '/admin/maquinas/agregar', methods: const [app.GET])
   Future<Maquina> getMaquina (String id) async {
     return getNow(id);
   }
