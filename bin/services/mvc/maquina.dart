@@ -30,6 +30,7 @@ class AdminMaquinaServices extends RethinkServices<Maquina> {
         maquina.imagenes.add(fileDb);
       }
     }
+
     await insertNow(maquina);
 
     app.redirect("/admin/maquinas/${maquina.id}");
@@ -38,7 +39,91 @@ class AdminMaquinaServices extends RethinkServices<Maquina> {
   @mvc.ViewController("/:id",
       filePath: '/admin/maquinas/agregar', methods: const [app.GET])
   Future<Maquina> getMaquina(String id) async {
-    return getNow(id);
+    Maquina maquina = await getNow(id);
+
+    print("GET");
+
+    if (maquina == null)
+      throw new app.ErrorResponse(404, "La maquina no fue encontrada");
+
+    return maquina;
+  }
+
+  @mvc.ViewController("/:id", filePath: '/admin/maquinas/agregar',
+      methods: const [app.POST], allowMultipartRequest: true)
+  updateMaquina(String id, @app.Body(app.FORM) QueryMap form) async {
+
+    print("POST");
+
+    Maquina maquina = decode(form, Maquina);
+    RqlQuery query = updateTyped(id, maquina);
+
+
+
+    if (form.archivosImagenes != null) {
+      List<app.HttpBodyFileUpload> images = form.archivosImagenes is List
+      ? form.archivosImagenes
+      : [form.archivosImagenes];
+
+      var imagenes = new List<FileDb>();
+      for (var file in images) {
+        FileDb fileDb = await fileServices.newFile(file);
+        imagenes.add(fileDb);
+      }
+
+      query = r.expr([query,
+        get(id).update((RqlQuery maq) => {
+          'imagenes': maq('imagenes').add(encode(imagenes))
+        })
+      ]);
+    }
+
+    await query.run(conn);
+
+    app.redirect("/admin/maquinas/$id");
+  }
+
+  @app.Route('/:id/imagenes/:idImagen/eliminar', methods: const [app.GET])
+  eliminarImagen (String id, String idImagen) async {
+    app.redirect("/admin/maquinas/$id");
+
+    await fileServices.deleteFile(idImagen);
+    await fileServices.deleteMetadata(idImagen);
+
+    get(id).update((RqlQuery maquina) => {
+      'imagenes': maquina('imagenes').filter((RqlQuery imagen) =>
+        imagen('id').eq(idImagen).not()
+      )
+    })
+    .run(conn);
+  }
+
+  @mvc.DefaultViewController (urlPosfix: '/todas',methods: const [app.GET])
+  Future<List<Maquina>> viewTodas () async {
+    print("TODAS");
+    Cursor result = await this.run(conn);
+    List<Map> list = await result.toArray();
+    return list.map((m) => decode(m, Maquina)).toList();
+  }
+
+
+  @app.Route('/:id/eliminar', methods: const [app.POST])
+  Future eliminar(String id) async {
+
+
+    Maquina maquina = await getNow(id);
+    print("ACA $id");
+
+    if (maquina.imagenes != null) {
+      for (var file in maquina.imagenes) {
+        await eliminarImagen(id, file.id);
+      }
+    }
+
+    await deleteNow(id);
+
+    print("22222 $id");
+    app.chain.("/admin/maquinas");
   }
 
   @mvc.DataController('/nueva', methods: const [app.POST])
@@ -56,17 +141,5 @@ class AdminMaquinaServices extends RethinkServices<Maquina> {
     maquina.id = null;
     await updateNow(id, maquina);
     return obtener(id);
-  }
-
-  @mvc.DataController('/:id', methods: const [app.DELETE])
-  Future eliminar(String id) async {
-    await deleteNow(id);
-  }
-
-  @mvc.DataController('/todas')
-  Future<List<Maquina>> todas() async {
-    Cursor result = await this.run(conn);
-    List<Map> list = await result.toArray();
-    return list.map((m) => decode(m, Maquina)).toList();
   }
 }

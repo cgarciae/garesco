@@ -13,6 +13,7 @@ dependencies:
   uuid: any
   redstone_mvc: any
   shelf: any
+  shelf_static: any
   redstone_utilities: any
   di: any
 transformers:

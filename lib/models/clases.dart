@@ -77,6 +77,8 @@ class Maquina extends Ref {
   @Field() set verMas(String s) => _verMas = s;
   @Field() String get verMas =>
       _verMas != null ? _verMas : linkVideo == true ? "Ver Video" : "Ver Mas";
+
+  @Field() String get idMaquina => id;
 }
 
 class Categoria extends Ref {
