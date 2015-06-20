@@ -11,12 +11,11 @@ dependencies:
   rethinkdb_driver: any
   postgresql: any
   uuid: any
-  redstone_mvc: any
+  redstone_mvc: ">=0.0.380+2 < 0.1.0"
   shelf: any
   shelf_static: any
   redstone_utilities: any
   di: any
+  browser: any
 transformers:
 - redstone_mapper
-- $dart2js:
-    $exclude: bin

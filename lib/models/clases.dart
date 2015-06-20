@@ -65,8 +65,10 @@ class Maquina extends Ref {
   @Field() String aNo;
   @Field() String descripcion;
   @Field() String imagenUrl;
+  @Field() bool enEmail;
   @Field() String link;
   @Field() String linkVideo;
+  @Field() bool get hasVideo => linkVideo != null && linkVideo.isNotEmpty;
   @Field() List<FileDb> imagenes;
   @Field() String get primeraImagen =>
     imagenes != null && imagenes.length > 0 ?

@@ -31,12 +31,8 @@ main() async {
   //var dbManager = new MongoDbManager('mongodb://192.168.59.103:8095/garesco_email', poolSize: 3);
 
   var config = new ConfigRethink(
-    host: "192.168.59.103",
-    tables: [
-      new TableConfig(Col.maquinas),
-      new TableConfig(Col.files)
-    ]
-  );
+      host: "192.168.59.103",
+      tables: [new TableConfig(Col.maquinas), new TableConfig(Col.files)]);
   await setupRethink(config);
 
   var dbManager = new RethinkDbManager.fromCongif(config);
@@ -45,39 +41,63 @@ main() async {
   app.addPlugin(mvc.mvcPluggin);
   app.addPlugin(securityPlugin);
 
-  app.setShelfHandler(createStaticHandler(
-    staticFolder,
-    defaultDocument: "index.html",
-    serveFilesOutsidePath: true));
+  app.setShelfHandler(createStaticHandler(staticFolder,
+      defaultDocument: "index.html", serveFilesOutsidePath: true));
 
   app.addModule(new Module()
     ..bind(FileServices)
-    ..bind(AdminMaquinaServices)
-    ..bind(InjectableRethinkConnection));
+    ..bind(AdminMaquinaController)
+    ..bind(InjectableRethinkConnection)
+    ..bind(TestEmail));
 
-  mvc.config = new mvc.MvcConfig();
-
-  app.setupConsoleLog(Level.ALL);
+  app.setupConsoleLog();
   app.start(port: 9090);
 }
 
-@mvc.GroupController('/email', root: '/lib/views')
-class TestEmail {
+@app.Interceptor(r'/.*')
+handleResponseHeader() {
+  var headers = {"Access-Control-Allow-Origin": "*"};
+
+  if (tipoBuild <= TipoBuild.jsTesting) {
+    headers['Cache-Control'] =
+        'private, no-store, no-cache, must-revalidate, max-age=0';
+  }
+  //process the chain and wrap the response
+  app.chain.next(() => app.response.change(headers: headers));
+}
+
+
+@mvc.GroupController('/email', root: '/web/html')
+class TestEmail extends RethinkServices {
+  AdminMaquinaController maquinaServices;
+
+  TestEmail (this.maquinaServices) : super ('emails');
+
   @mvc.ViewController('/render', methods: const [app.POST])
   Email render(@Decode() Email email) => email;
+
+  @mvc.ViewController('/render', methods: const [app.GET], ignoreMaster: true)
+  Future<Email> autoRender () async {
+     Cursor c = await maquinaServices.filter((RqlQuery m) =>
+      m('enEmail').eq(true)).run(conn);
+
+    List<Maquina> maquinas = decode(await c.toArray(), Maquina);
+    var email = new Email()
+      ..maquinas = maquinas;
+    return email;
+  }
 
   @mvc.DataController('/json', methods: const [app.POST])
   json(@Decode() Email email) => email;
 
-  @mvc.DataController('/form', methods: const [app.POST], allowMultipartRequest: true)
+  @mvc.DataController('/form',
+      methods: const [app.POST], allowMultipartRequest: true)
   testForm(@Decode(from: const [app.FORM]) Email m) {
     print(m.urlBanner);
     return m;
   }
 
-  @Secure (level: 0)
-  @app.Route ('test')
-  test () => "test";
+  @Secure(level: 0)
+  @app.Route('test')
+  test() => "test";
 }
-
-

@@ -1,11 +1,11 @@
 part of garesco.email.server;
 
-@mvc.GroupController('/admin/maquinas', root: '/lib/views')
-class AdminMaquinaServices extends RethinkServices<Maquina> {
+@mvc.GroupController('/admin/maquinas', root: '/html')
+class AdminMaquinaController extends RethinkServices<Maquina> {
   FileServices fileServices;
 
-  AdminMaquinaServices(this.fileServices) : super('maquinas');
-  AdminMaquinaServices.fromConnection(Connection conn)
+  AdminMaquinaController(this.fileServices) : super('maquinas');
+  AdminMaquinaController.fromConnection(Connection conn)
       : super.fromConnection('maquinas', conn);
 
   @mvc.ViewController('/agregar', methods: const [app.GET])
@@ -13,27 +13,25 @@ class AdminMaquinaServices extends RethinkServices<Maquina> {
     return {};
   }
 
-  @mvc.ViewController('/agregar',
+  @mvc.Controller('/agregar',
       methods: const [app.POST], allowMultipartRequest: true)
-  agregar(@app.Body(app.FORM) QueryMap form) async {
+  Future<String> agregar(@app.Body(app.FORM) QueryMap form) async {
     Maquina maquina = decode(form, Maquina);
     maquina.id = new uuid.Uuid().v1();
 
-    if (form.archivosImagenes != null) {
-      List<app.HttpBodyFileUpload> images = form.archivosImagenes is List
-          ? form.archivosImagenes
-          : [form.archivosImagenes];
+    processForm(form);
 
-      maquina.imagenes = new List<FileDb>();
-      for (var file in images) {
-        var fileDb = await fileServices.newFile(file);
-        maquina.imagenes.add(fileDb);
-      }
+    app.HttpBodyFileUpload file = form.archivosImagenes;
+    if (file != null &&
+        file is app.HttpBodyFileUpload &&
+        file.content.length > 0) {
+      var fileDb = await fileServices.newFile(file);
+      maquina.imagenes = [fileDb];
     }
 
     await insertNow(maquina);
 
-    app.redirect("/admin/maquinas/${maquina.id}");
+    return "/admin/maquinas/${maquina.id}";
   }
 
   @mvc.ViewController("/:id",
@@ -41,78 +39,65 @@ class AdminMaquinaServices extends RethinkServices<Maquina> {
   Future<Maquina> getMaquina(String id) async {
     Maquina maquina = await getNow(id);
 
-    print("GET");
-
-    if (maquina == null)
-      throw new app.ErrorResponse(404, "La maquina no fue encontrada");
+    if (maquina == null) throw new app.ErrorResponse(
+        404, "La maquina no fue encontrada");
 
     return maquina;
   }
 
-  @mvc.ViewController("/:id", filePath: '/admin/maquinas/agregar',
-      methods: const [app.POST], allowMultipartRequest: true)
+  @mvc.Controller("/:id",
+      filePath: '/admin/maquinas/agregar',
+      methods: const [app.POST],
+      allowMultipartRequest: true)
   updateMaquina(String id, @app.Body(app.FORM) QueryMap form) async {
-
-    print("POST");
-
+    print(form);
+    processForm(form);
     Maquina maquina = decode(form, Maquina);
     RqlQuery query = updateTyped(id, maquina);
 
 
 
-    if (form.archivosImagenes != null) {
-      List<app.HttpBodyFileUpload> images = form.archivosImagenes is List
-      ? form.archivosImagenes
-      : [form.archivosImagenes];
+    app.HttpBodyFileUpload file = form.archivosImagenes;
+    if (file != null &&
+        file is app.HttpBodyFileUpload &&
+        file.content.length > 0) {
+      var fileDb = await fileServices.newFile(file);
 
-      var imagenes = new List<FileDb>();
-      for (var file in images) {
-        FileDb fileDb = await fileServices.newFile(file);
-        imagenes.add(fileDb);
-      }
-
-      query = r.expr([query,
+      query = r.expr([
+        query,
         get(id).update((RqlQuery maq) => {
-          'imagenes': maq('imagenes').add(encode(imagenes))
+          'imagenes': maq('imagenes').add([encode(fileDb)])
         })
       ]);
     }
-
     await query.run(conn);
-
-    app.redirect("/admin/maquinas/$id");
+    return "/admin/maquinas/$id";
   }
 
-  @app.Route('/:id/imagenes/:idImagen/eliminar', methods: const [app.GET])
-  eliminarImagen (String id, String idImagen) async {
-    app.redirect("/admin/maquinas/$id");
-
+  @mvc.Controller('/:id/imagenes/:idImagen/eliminar',
+      methods: const [app.DELETE])
+  eliminarImagen(String id, String idImagen) async {
     await fileServices.deleteFile(idImagen);
     await fileServices.deleteMetadata(idImagen);
 
-    get(id).update((RqlQuery maquina) => {
-      'imagenes': maquina('imagenes').filter((RqlQuery imagen) =>
-        imagen('id').eq(idImagen).not()
-      )
+    await get(id)
+        .update((RqlQuery maquina) => {
+      'imagenes': maquina('imagenes')
+          .filter((RqlQuery imagen) => imagen('id').eq(idImagen).not())
     })
-    .run(conn);
+        .run(conn);
   }
 
-  @mvc.DefaultViewController (urlPosfix: '/todas',methods: const [app.GET])
-  Future<List<Maquina>> viewTodas () async {
-    print("TODAS");
+  @mvc.DefaultViewController(urlPosfix: '/todas', methods: const [app.GET])
+  Future<List<Maquina>> viewTodas() async {
     Cursor result = await this.run(conn);
     List<Map> list = await result.toArray();
     return list.map((m) => decode(m, Maquina)).toList();
   }
 
-
-  @app.Route('/:id/eliminar', methods: const [app.POST])
+  @mvc.Controller('/:id/eliminar', methods: const [app.DELETE])
   Future eliminar(String id) async {
-
-
     Maquina maquina = await getNow(id);
-    print("ACA $id");
 
     if (maquina.imagenes != null) {
       for (var file in maquina.imagenes) {
@@ -122,24 +107,20 @@ class AdminMaquinaServices extends RethinkServices<Maquina> {
 
     await deleteNow(id);
 
-    print("22222 $id");
-    app.chain.("/admin/maquinas");
+    return '/admin/maquinas';
   }
 
-  @mvc.DataController('/nueva', methods: const [app.POST])
-  Future<Maquina> nueva() => agregar(new Maquina()
-    ..aNo = ""
-    ..descripcion = ""
-    ..modelo = ""
-    ..pais = ""
-    ..precio = ""
-    ..venta = ""
-    ..link = "");
-
-  @mvc.DataController('/:id', methods: const [app.PUT])
-  Future<Maquina> actualizar(String id, @Decode() Maquina maquina) async {
-    maquina.id = null;
-    await updateNow(id, maquina);
-    return obtener(id);
+  processForm (QueryMap form) {
+    form.enEmail = form.enEmail == "true";
   }
+}
+
+@mvc.GroupController('/maquinas', root: '/web/html')
+class MaquinaController extends RethinkServices<Maquina> {
+
+  AdminMaquinaController adminMaquinaController;
+
+  MaquinaController(this.adminMaquinaController) : super('maquinas');
+
+
 }
