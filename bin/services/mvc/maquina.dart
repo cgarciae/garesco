@@ -15,15 +15,14 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
 
   @mvc.Controller('/agregar',
       methods: const [app.POST], allowMultipartRequest: true)
-  Future<String> agregar(@app.Body(app.FORM) QueryMap form) async {
+  Future<shelf.Response> agregar(@app.Body(app.FORM) DynamicMap form) async {
+    processForm(form);
     Maquina maquina = decode(form, Maquina);
     maquina.id = new uuid.Uuid().v1();
 
-    processForm(form);
-
-    app.HttpBodyFileUpload file = form.archivosImagenes;
+    HttpBodyFileUpload file = form.archivosImagenes;
     if (file != null &&
-        file is app.HttpBodyFileUpload &&
+        file is HttpBodyFileUpload &&
         file.content.length > 0) {
       var fileDb = await fileServices.newFile(file);
       maquina.imagenes = [fileDb];
@@ -31,11 +30,11 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
 
     await insertNow(maquina);
 
-    return "/admin/maquinas/${maquina.id}";
+    return app.redirect("/admin/maquinas/${maquina.id}");
   }
 
   @mvc.ViewController("/:id",
-      filePath: '/admin/maquinas/agregar', methods: const [app.GET])
+      filePath: '/admin/maquinas/agregar', methods: const [app.GET], allowMultipartRequest: true)
   Future<Maquina> getMaquina(String id) async {
     Maquina maquina = await getNow(id);
 
@@ -49,17 +48,17 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
       filePath: '/admin/maquinas/agregar',
       methods: const [app.POST],
       allowMultipartRequest: true)
-  updateMaquina(String id, @app.Body(app.FORM) QueryMap form) async {
-    print(form);
+  updateMaquina(String id, @app.Body(app.FORM) DynamicMap form) async {
+
     processForm(form);
     Maquina maquina = decode(form, Maquina);
     RqlQuery query = updateTyped(id, maquina);
 
 
 
-    app.HttpBodyFileUpload file = form.archivosImagenes;
+    HttpBodyFileUpload file = form.archivosImagenes;
     if (file != null &&
-        file is app.HttpBodyFileUpload &&
+        file is HttpBodyFileUpload &&
         file.content.length > 0) {
       var fileDb = await fileServices.newFile(file);
 
@@ -71,11 +70,11 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
       ]);
     }
     await query.run(conn);
-    return "/admin/maquinas/$id";
+    return app.chain.forward("/admin/maquinas/$id");
   }
 
   @mvc.Controller('/:id/imagenes/:idImagen/eliminar',
-      methods: const [app.DELETE])
+      methods: const [app.GET])
   eliminarImagen(String id, String idImagen) async {
     await fileServices.deleteFile(idImagen);
     await fileServices.deleteMetadata(idImagen);
@@ -86,6 +85,8 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
           .filter((RqlQuery imagen) => imagen('id').eq(idImagen).not())
     })
         .run(conn);
+
+    return app.redirect('/admin/maquinas/$id');
   }
 
   @mvc.DefaultViewController(urlPosfix: '/todas', methods: const [app.GET])
@@ -95,7 +96,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     return list.map((m) => decode(m, Maquina)).toList();
   }
 
-  @mvc.Controller('/:id/eliminar', methods: const [app.DELETE])
+  @mvc.Controller('/:id/eliminar', methods: const [app.POST, app.DELETE])
   Future eliminar(String id) async {
     Maquina maquina = await getNow(id);
 
@@ -106,11 +107,10 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     }
 
     await deleteNow(id);
-
-    return '/admin/maquinas';
+    return app.redirect('/admin/maquinas');
   }
 
-  processForm (QueryMap form) {
+  processForm (DynamicMap form) {
     form.enEmail = form.enEmail == "true";
   }
 }

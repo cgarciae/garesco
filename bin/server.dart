@@ -1,10 +1,9 @@
 library garesco.email.server;
 
 import 'package:mustache/mustache.dart';
-import 'package:redstone/server.dart' as app;
+import 'package:redstone/redstone.dart' as app;
 import 'package:shelf/shelf.dart' as shelf;
-import 'package:redstone/query_map.dart';
-import 'package:redstone_utilities/redstone_utilities.dart';
+import 'package:redstone/src/dynamic_map.dart';
 import 'package:redstone_mapper/mapper.dart';
 import 'package:redstone_mapper/plugin.dart';
 import 'package:path/path.dart' as path;
@@ -20,6 +19,7 @@ import 'package:rethinkdb_driver/rethinkdb_driver.dart';
 import 'package:garesco_email/plugins/secure.dart';
 import 'dart:io';
 import 'package:logging/logging.dart';
+import 'package:http_server/src/http_body.dart';
 
 part 'services/mvc/maquina.dart';
 part 'services/mvc/categoria.dart';
@@ -44,6 +44,8 @@ main() async {
   app.setShelfHandler(createStaticHandler(staticFolder,
       defaultDocument: "index.html", serveFilesOutsidePath: true));
 
+  app.showErrorPage = false;
+
   app.addModule(new Module()
     ..bind(FileServices)
     ..bind(AdminMaquinaController)
@@ -55,7 +57,7 @@ main() async {
 }
 
 @app.Interceptor(r'/.*')
-handleResponseHeader() {
+handleResponseHeader() async {
   var headers = {"Access-Control-Allow-Origin": "*"};
 
   if (tipoBuild <= TipoBuild.jsTesting) {
@@ -63,11 +65,13 @@ handleResponseHeader() {
         'private, no-store, no-cache, must-revalidate, max-age=0';
   }
   //process the chain and wrap the response
-  app.chain.next(() => app.response.change(headers: headers));
+  await app.chain.next();
+
+  return app.response.change(headers: headers);
 }
 
 
-@mvc.GroupController('/email', root: '/web/html')
+@mvc.GroupController('/email', root: '/html')
 class TestEmail extends RethinkServices {
   AdminMaquinaController maquinaServices;
 

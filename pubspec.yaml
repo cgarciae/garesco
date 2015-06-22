@@ -5,17 +5,16 @@ dependencies:
   mustache: any
   path: any
   quiver: any
-  redstone: "< 0.6.0"
-  redstone_mapper: any
-  redstone_rethinkdb: any
+  redstone: '>=0.6.0-beta.1+3 < 0.7.0'
+  redstone_mapper: '>=0.2.0-beta.1 < 0.3.0'
+  redstone_rethinkdb: '>=0.1.0-beta.1+1'
+  redstone_mapper_mongo: '>=0.2.0-beta.1'
   rethinkdb_driver: any
   postgresql: any
   uuid: any
-  redstone_mvc: ">=0.0.380+2 < 0.1.0"
-  shelf: any
+  redstone_mvc: '>=0.1.0-beta.1+5'
+  shelf: '>=0.6.0 <0.7.0'
   shelf_static: any
-  redstone_utilities: any
   di: any
-  browser: any
 transformers:
 - redstone_mapper

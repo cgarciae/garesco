@@ -6,7 +6,7 @@ class FileServices extends GenericRethinkServices<FileDb> {
 
   FileServices(InjectableRethinkConnection irc) : super (Col.files, irc);
 
-  Future<FileDb> newFile (app.HttpBodyFileUpload file) async {
+  Future<FileDb> newFile (HttpBodyFileUpload file) async {
     var fileDb = new FileDb()
       ..id = new uuid.Uuid().v1()
       ..contentType = file.contentType.value;
