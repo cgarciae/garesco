@@ -1,5 +1,10 @@
 part of garesco.email;
 
+class Ref {
+  @Field() String id;
+  @Field() String get href => "MISSING IMPLEMENTATION";
+}
+
 class Email extends Ref {
   @Field() String urlBanner;
   @Field() String headingTop;

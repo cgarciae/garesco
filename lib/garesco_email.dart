@@ -2,9 +2,8 @@ library garesco.email;
 
 import 'package:redstone_mapper/plugin.dart';
 import 'package:redstone_mapper/mapper.dart';
-import 'package:redstone/query_map.dart';
+import 'package:redstone/src/dynamic_map.dart';
 import 'package:quiver/iterables.dart' as qi;
-import 'package:redstone_utilities/redstone_utilities.dart';
 
 part 'models/clases.dart';
 

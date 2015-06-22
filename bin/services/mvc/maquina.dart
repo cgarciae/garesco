@@ -8,12 +8,12 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   AdminMaquinaController.fromConnection(Connection conn)
       : super.fromConnection('maquinas', conn);
 
-  @mvc.ViewController('/agregar', methods: const [app.GET])
+  @mvc.ViewController('/agregar', filePath: '/admin/maquinas/maquina', methods: const [app.GET])
   agregarForm() async {
     return {};
   }
 
-  @mvc.Controller('/agregar',
+  @mvc.Controller('/agregar', filePath: '/admin/maquinas/maquina',
       methods: const [app.POST], allowMultipartRequest: true)
   Future<shelf.Response> agregar(@app.Body(app.FORM) DynamicMap form) async {
     processForm(form);
@@ -34,7 +34,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   }
 
   @mvc.ViewController("/:id",
-      filePath: '/admin/maquinas/agregar', methods: const [app.GET], allowMultipartRequest: true)
+      filePath: '/admin/maquinas/maquina', methods: const [app.GET], allowMultipartRequest: true)
   Future<Maquina> getMaquina(String id) async {
     Maquina maquina = await getNow(id);
 
@@ -45,7 +45,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   }
 
   @mvc.Controller("/:id",
-      filePath: '/admin/maquinas/agregar',
+      filePath: '/admin/maquinas/maquina',
       methods: const [app.POST],
       allowMultipartRequest: true)
   updateMaquina(String id, @app.Body(app.FORM) DynamicMap form) async {
@@ -70,7 +70,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
       ]);
     }
     await query.run(conn);
-    return app.chain.forward("/admin/maquinas/$id");
+    return app.redirect("/admin/maquinas/$id");
   }
 
   @mvc.Controller('/:id/imagenes/:idImagen/eliminar',
@@ -115,7 +115,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   }
 }
 
-@mvc.GroupController('/maquinas', root: '/web/html')
+@mvc.GroupController('/maquinas', root: '/html')
 class MaquinaController extends RethinkServices<Maquina> {
 
   AdminMaquinaController adminMaquinaController;
@@ -123,4 +123,9 @@ class MaquinaController extends RethinkServices<Maquina> {
   MaquinaController(this.adminMaquinaController) : super('maquinas');
 
 
+  @mvc.DefaultViewController (urlPosfix: '/todas')
+  maquinas () => adminMaquinaController.viewTodas();
+
+  @mvc.ViewController ('/:id', filePath: '/maquinas/maquina')
+  getMaquina (String id) => adminMaquinaController.getMaquina(id);
 }
