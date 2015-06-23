@@ -1,6 +1,6 @@
 part of garesco.email.server;
 
-@mvc.GroupController('/admin/maquinas', root: '/html')
+@mvc.GroupController('/admin/maquinas')
 class AdminMaquinaController extends RethinkServices<Maquina> {
   FileServices fileServices;
 
@@ -8,12 +8,12 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   AdminMaquinaController.fromConnection(Connection conn)
       : super.fromConnection('maquinas', conn);
 
-  @mvc.ViewController('/agregar', filePath: '/admin/maquinas/maquina', methods: const [app.GET])
+  @mvc.ViewController('/agregar', localPath: '/maquina', methods: const [app.GET])
   agregarForm() async {
     return {};
   }
 
-  @mvc.Controller('/agregar', filePath: '/admin/maquinas/maquina',
+  @mvc.Controller('/agregar', localPath: '/maquina',
       methods: const [app.POST], allowMultipartRequest: true)
   Future<shelf.Response> agregar(@app.Body(app.FORM) DynamicMap form) async {
     processForm(form);
@@ -34,7 +34,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   }
 
   @mvc.ViewController("/:id",
-      filePath: '/admin/maquinas/maquina', methods: const [app.GET], allowMultipartRequest: true)
+    localPath: '/maquina', methods: const [app.GET], allowMultipartRequest: true)
   Future<Maquina> getMaquina(String id) async {
     Maquina maquina = await getNow(id);
 
@@ -45,7 +45,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   }
 
   @mvc.Controller("/:id",
-      filePath: '/admin/maquinas/maquina',
+      localPath: '/maquina',
       methods: const [app.POST],
       allowMultipartRequest: true)
   updateMaquina(String id, @app.Body(app.FORM) DynamicMap form) async {
@@ -89,7 +89,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     return app.redirect('/admin/maquinas/$id');
   }
 
-  @mvc.DefaultViewController(urlPosfix: '/todas', methods: const [app.GET])
+  @mvc.DefaultViewController(subpath: '/todas', methods: const [app.GET])
   Future<List<Maquina>> viewTodas() async {
     Cursor result = await this.run(conn);
     List<Map> list = await result.toArray();
@@ -115,7 +115,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   }
 }
 
-@mvc.GroupController('/maquinas', root: '/html')
+@mvc.GroupController('/maquinas')
 class MaquinaController extends RethinkServices<Maquina> {
 
   AdminMaquinaController adminMaquinaController;
@@ -123,9 +123,9 @@ class MaquinaController extends RethinkServices<Maquina> {
   MaquinaController(this.adminMaquinaController) : super('maquinas');
 
 
-  @mvc.DefaultViewController (urlPosfix: '/todas')
+  @mvc.DefaultViewController (subpath: '/todas')
   maquinas () => adminMaquinaController.viewTodas();
 
-  @mvc.ViewController ('/:id', filePath: '/maquinas/maquina')
+  @mvc.ViewController ('/:id', localPath: '/maquina')
   getMaquina (String id) => adminMaquinaController.getMaquina(id);
 }

@@ -1,0 +1,96 @@
+{
+  "id": "",
+  "urlBanner":"https://43da2523a790f76536b802cd2b859b42f258b496.googledrive.com/host/0B_rvcwt9I8BHfmZkYWNiTHp2RnFyS2QzdFNXYzlMbThoUzlOQVFxQkRCUjlrMVBYcmVpaTg/Fotos%20Generales/LOGO%20ETI.jpg",
+  "headingTop": "",
+  "descripcionTop": "",
+  "categorias":
+  [
+    {
+      "urlIcono": "http://cdn.flaticon.com/png/256/33768.png",
+      "heading": "Soplado / PET",
+      "descripcion": "Acumulador / Continua / Cabezal / Estirado y Soplado  ",
+      "link":
+      {
+        "href": "https://drive.google.com/open?id=1WsanOxw_ICK8Jh2rwSs2gvDGZwZM_IwlnvIDPjpvky4&authuser=0"
+      }
+    },
+    {
+      "urlIcono": "http://cdn.flaticon.com/png/256/66095.png",
+      "heading": "Inyeccion",
+      "descripcion": "Horizontal / Vertical / Preformas",
+      "link":
+      {
+        "href": "https://drive.google.com/open?id=18Joi_KDifKzFv_11U4d5Fo5Mse9XE0daRCY67eZrLzk&authuser=0"
+      }
+    },
+    {
+      "urlIcono": "http://cdn.flaticon.com/png/256/74327.png",
+      "heading": "Termoformado",
+      "descripcion": "Presion / Vacio",
+      "link":
+      {
+        "href": "https://drive.google.com/open?id=108MTEj27TVCA71gTMtUOuamEZnebVAD-zAjSGN316SY&authuser=0"
+      }
+    },
+    {
+      "urlIcono": "http://a.dilcdn.com/bl/wp-content/uploads/sites/13/2013/06/Mickey-Mouse-Cookie-Cutter-Set.jpg",
+      "heading": "Extrusion",
+      "descripcion": "Lamina / Perfil / Tubo / Pelicula / Fin de Linea",
+      "link":
+      {
+        "href": "https://drive.google.com/open?id=1l4PIkHRuA9DrGeets6xT2wpFXGkQsd6n30LTe2RCmks&authuser=0"
+      }
+    },
+    {
+      "urlIcono": "http://www.panlap.com/wp-content/uploads/2013/07/Inj-Icon-Web-Logo.png",
+      "heading": "Moldes",
+      "descripcion": "Inyeccion / Termoformado / Preformas / Robots",
+      "link":
+      {
+        "href": "https://drive.google.com/open?id=1vcf34y8MsxDXLX0n5rOjTWlCb-ik4pOahQGzu4e0wmM&authuser=0"
+      }
+    },
+    {
+      "urlIcono": "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/256/product.png",
+      "heading": "Empaque",
+      "descripcion": "Embolsadoras / Impresoras / Selladoras / Soldadores / Troqueladoras / Urdidora / Enmangadora / Detector Fugas / Compactador",
+      "link":
+      {
+        "href": "https://drive.google.com/open?id=1OfpbQIjEba4h1RzDW_uaAngAAySgrLhssJFvH2kfK4I&authuser=0"
+      }
+    },
+    {
+      "urlIcono": "http://www.myiconfinder.com/uploads/iconsets/256-256-56bff912252bc32cefe368b55c9e46bc.png",
+      "heading": "Auxiliares",
+      "descripcion": "Dosificador / Mezclador / Molino / Triturador / Compresor / Chiller / Separador de Metales / Cristalizador",
+      "link":
+      {
+        "href": "http://youtu.be/jfyG_mamjZA"
+      }
+    },
+    {
+      "urlIcono": "https://cdn2.iconfinder.com/data/icons/windows-8-metro-style/512/cnc_machine.png",
+      "heading": "Centro Mecanizado CNC",
+      "descripcion": "Verticales / Horizontales / taladro / Torneado / Rectificadora de Superfices",
+      "link":
+      {
+        "href": "https://drive.google.com/open?id=1CWDjfvz2W_yZlpIrr8w5nOZO9qZeq-6xo0352r4KXgY&authuser=0",
+        "linkVideo": true
+      }
+    },
+    {
+      "urlIcono": "http://cdn.flaticon.com/png/256/69769.png",
+      "heading": "Repuestos y reparacion",
+      "descripcion": "Ubicacion y envio de repuestos / Reparacion tarjetas y Servomotores",
+      "link":
+      {
+        "href": "https://drive.google.com/open?id=0B_rvcwt9I8BHZmY1NEtkMnVZclk&authuser=0"
+      }
+    }
+  ],
+
+  "headingBottom": "Maquinaria NUEVA",
+  "descripcionBottom": "Fabricada en Korea, Taiwan, China: Equipos auxiliares, Líneas Extrusoras, Moldes de Inyección rápida, Sopladoras, Inyectoras, Líneas peletizadoras, Moldes de termoformado, Termoformadoras, Inyectoras, Rotativas, Lineas recicladoras, Moldes de Inyeccion, Líneas de empaque, Llenadoras de líquidos, Rotomoldeo.",
+  "mensajeFinal": " No encuentra la maquina que esta buscando? Por favor hagamelo saber.Durante los ultimos 20 años hemos desarrollado contactos para saber donde ubicar maquinaria difícil de encontrar.",
+  "urlImagenFinal": "https://43da2523a790f76536b802cd2b859b42f258b496.googledrive.com/host/0B_rvcwt9I8BHfmZkYWNiTHp2RnFyS2QzdFNXYzlMbThoUzlOQVFxQkRCUjlrMVBYcmVpaTg/Fotos%20Generales/LOGO%20Pata%20mayot%20informacion.jpg"
+}

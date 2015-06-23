@@ -18,6 +18,7 @@ import 'package:redstone_rethinkdb/redstone_rethinkdb.dart';
 import 'package:rethinkdb_driver/rethinkdb_driver.dart';
 import 'package:garesco_email/plugins/secure.dart';
 import 'dart:io';
+import 'dart:convert';
 import 'package:logging/logging.dart';
 import 'package:http_server/src/http_body.dart';
 
@@ -46,6 +47,8 @@ main() async {
 
   app.showErrorPage = false;
 
+  mvc.config = new mvc.MvcConfig();
+
   app.addModule(new Module()
     ..bind(FileServices)
     ..bind(AdminMaquinaController)
@@ -71,7 +74,7 @@ handleResponseHeader() async {
 }
 
 
-@mvc.GroupController('/email', root: '/html')
+@mvc.GroupController('/email')
 class TestEmail extends RethinkServices {
   AdminMaquinaController maquinaServices;
 
@@ -86,7 +89,7 @@ class TestEmail extends RethinkServices {
       m('enEmail').eq(true)).run(conn);
 
     List<Maquina> maquinas = decode(await c.toArray(), Maquina);
-    var email = new Email()
+    var email = (await staticEmail)
       ..maquinas = maquinas;
     return email;
   }
@@ -104,4 +107,10 @@ class TestEmail extends RethinkServices {
   @Secure(level: 0)
   @app.Route('test')
   test() => "test";
+}
+
+
+Future<Email> get staticEmail async {
+  var json = await new File (path.current + '/bin/email.json').readAsString(encoding: LATIN1);
+  return decodeJson(json, Email);
 }

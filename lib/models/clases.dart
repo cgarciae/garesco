@@ -5,7 +5,9 @@ class Ref {
   @Field() String get href => "MISSING IMPLEMENTATION";
 }
 
-class Email extends Ref {
+class Email {
+  @Field() String id;
+  @Field() String get href => "MISSING IMPLEMENTATION";
   @Field() String urlBanner;
   @Field() String headingTop;
   @Field() String descripcionTop;
