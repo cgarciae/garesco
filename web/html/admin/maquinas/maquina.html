@@ -18,12 +18,10 @@
                 <div class="card-content">
                     <span class="card-title grey-text text-darken-4">Info</span>
                     <ul>
-                        {{#id}}
-                        <li class="col s12">
-                            <label style="font-size: medium">ID</label><br>
-                            <small>{{id}}</small>
+                        <li class="input-field col m6 s12">
+                            <input id="eti" type="text" class="validate" name="eti" value="{{eti}}">
+                            <label for="eti">ETI</label>
                         </li>
-                        {{/id}}
                         <li class="input-field col m6 s12">
                             <input id="pais" type="text" class="validate" name="pais" value="{{pais}}">
                             <label for="pais">pais</label>
@@ -39,10 +37,6 @@
                         <li class="input-field col m6 s12">
                             <input id="aNo" type="text" class="validate" name="aNo" value="{{aNo}}">
                             <label for="aNo">año</label>
-                        </li>
-                        <li class="input-field col s12">
-                            <input id="link" type="text" class="validate" name="link" value="{{link}}">
-                            <label for="link">link</label>
                         </li>
                         <li class="input-field col s12">
                             <input id="linkVideo" type="text" class="validate" name="linkVideo" value="{{linkVideo}}">

@@ -5,9 +5,7 @@ class Ref {
   @Field() String get href => "MISSING IMPLEMENTATION";
 }
 
-class Email {
-  @Field() String id;
-  @Field() String get href => "MISSING IMPLEMENTATION";
+class Email extends Ref {
   @Field() String urlBanner;
   @Field() String headingTop;
   @Field() String descripcionTop;
@@ -66,6 +64,7 @@ class FilaCategoria {
 
 class Maquina extends Ref {
   @Field() String venta;
+  @Field() String eti;
   @Field() String pais;
   @Field() String precio;
   @Field() String modelo;
