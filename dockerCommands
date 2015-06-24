@@ -1,0 +1,39 @@
+## SERVER RUN##
+docker stop server && docker rm server
+docker run -d -p 80:9090 -it --name server --link rethinkdb:rethinkdb cgarciae/garescoemail:0.0.10
+
+## SERVER RUN TEST##
+docker stop server && docker rm server
+docker run -d -p 9090:9090 -it --name server --link db:db cgarciae/aristadart:latest
+
+## SERVER BUILD ##
+cd "/c/Users/Cristian Garcia/Documents/GitHub/aristadart"
+docker build -t cgarciae/aristadart:0.0.5 .
+docker tag cgarciae/aristadart:0.0.5 cgarciae/aristadart:latest
+
+## RETHINK TEST ##
+docker run -it -d --name rethinkdb -p 28015:28015 -p 8080:8080 --volumes-from data rethinkdb
+
+## RETHINK SERVER ##
+docker run -it -d --name rethinkdb --volumes-from data rethinkdb
+
+## DB TEST RUN##
+docker stop dbtest && docker rm dbtest
+docker run -d -it -p 8095:27017 --name dbtest --volumes-from data mongo:2.6.7
+
+## DB RUN##
+docker stop db && docker rm db
+docker run -d -it --name db --volumes-from data mongo:2.6.7
+
+## DATA RUN##
+docker stop data && docker rm data
+docker run -it --name data cgarciae/data:latest
+
+## DATA BUILD ##
+cd "/c/Users/Cristian Garcia/Documents/GitHub/aristadart/dockerFiles/data"
+docker build -t cgarciae/data:0.0.1 .
+docker tag cgarciae/data:0.0.1 cgarciae/data:latest
+
+## DATA TEST##
+docker stop datatest && docker rm datatest
+docker run -it --name datatest -v "/c/Users/Cristian Garcia/b2d/data":/data/db cgarciae/data:latest

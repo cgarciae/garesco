@@ -7,7 +7,7 @@ import 'package:quiver/iterables.dart' as qi;
 
 part 'models/clases.dart';
 
-const int tipoBuild = TipoBuild.desarrollo;
+const int tipoBuild = TipoBuild.deploy;
 
 int get port => 9090;
 
