@@ -15,12 +15,10 @@ String get staticFolder {
   switch (tipoBuild)
   {
     case TipoBuild.desarrollo:
-      return "web";
     case TipoBuild.jsTesting:
-      return "build/web";
     case TipoBuild.dockerTesting:
     case TipoBuild.deploy:
-      return "build/web";
+      return "web";
   }
 }
 
@@ -33,7 +31,7 @@ String get partialHost {
     case TipoBuild.dockerTesting:
       return "192.168.59.103:9090";
     case TipoBuild.deploy:
-      return "104.131.109.228";
+      return "45.55.88.247";
   }
 }
 
@@ -46,10 +44,10 @@ String get partialDBHost {
   {
     case TipoBuild.desarrollo:
     case TipoBuild.jsTesting:
-      return "192.168.59.103:8095";
+      return "192.168.59.103";
     case TipoBuild.dockerTesting:
     case TipoBuild.deploy:
-      return "db";
+      return "rethinkdb";
   }
 }
 
@@ -66,4 +64,4 @@ class Col {
   static const String maquinas = 'maquinas';
 }
 
-QueryMap queryMap (Map map) => new QueryMap (map);
+DynamicMap queryMap (Map map) => new DynamicMap (map);

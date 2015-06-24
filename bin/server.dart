@@ -32,7 +32,7 @@ main() async {
   //var dbManager = new MongoDbManager('mongodb://192.168.59.103:8095/garesco_email', poolSize: 3);
 
   var config = new ConfigRethink(
-      host: "192.168.59.103",
+      host: partialDBHost,
       tables: [new TableConfig(Col.maquinas), new TableConfig(Col.files)]);
   await setupRethink(config);
 
