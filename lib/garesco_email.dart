@@ -4,10 +4,11 @@ import 'package:redstone_mapper/plugin.dart';
 import 'package:redstone_mapper/mapper.dart';
 import 'package:redstone/src/dynamic_map.dart';
 import 'package:quiver/iterables.dart' as qi;
+import 'package:path/path.dart' as path;
 
 part 'models/clases.dart';
 
-const int tipoBuild = TipoBuild.desarrollo;
+const int tipoBuild = TipoBuild.deploy;
 
 int get port => 9090;
 
@@ -19,6 +20,18 @@ String get staticFolder {
     case TipoBuild.dockerTesting:
     case TipoBuild.deploy:
       return "web";
+  }
+}
+
+String get filesPath {
+  switch (tipoBuild)
+  {
+    case TipoBuild.desarrollo:
+    case TipoBuild.jsTesting:
+      return '${path.current}/files';
+    case TipoBuild.dockerTesting:
+    case TipoBuild.deploy:
+      return "/files";
   }
 }
 

@@ -1,17 +1,17 @@
 ## SERVER RUN##
 docker stop server && docker rm server
-docker run -d -p 80:9090 -it --name server --link rethinkdb:rethinkdb cgarciae/garescoemail:0.0.10
+docker run -d -p 80:9090 -it --name server --link rethinkdb:rethinkdb --volumes-from data cgarciae/garescoemail:0.0.13
 
 ## SERVER RUN TEST##
 docker stop server && docker rm server
-docker run -d -p 9090:9090 -it --name server --link db:db cgarciae/aristadart:latest
+docker run -d -p 9090:9090 -p 8181:8181 -it --name server --link rethinkdb:rethinkdb --volumes-from data cgarciae/garescoemail:0.0.13
 
 ## SERVER BUILD ##
-cd "/c/Users/Cristian Garcia/Documents/GitHub/aristadart"
-docker build -t cgarciae/aristadart:0.0.5 .
-docker tag cgarciae/aristadart:0.0.5 cgarciae/aristadart:latest
+docker build -t cgarciae/garescoemail:0.0.13 .
+docker tag -f cgarciae/garescoemail:0.0.13 cgarciae/garescoemail:latest
 
 ## RETHINK TEST ##
+docker stop rethinkdb && docker rm rethinkdb
 docker run -it -d --name rethinkdb -p 28015:28015 -p 8080:8080 --volumes-from data rethinkdb
 
 ## RETHINK SERVER ##
@@ -27,7 +27,7 @@ docker run -d -it --name db --volumes-from data mongo:2.6.7
 
 ## DATA RUN##
 docker stop data && docker rm data
-docker run -it --name data cgarciae/data:latest
+docker run -it --name data cgarciae/data:0.0.3
 
 ## DATA BUILD ##
 cd "/c/Users/Cristian Garcia/Documents/GitHub/aristadart/dockerFiles/data"

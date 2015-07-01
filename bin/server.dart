@@ -59,7 +59,7 @@ main() async {
   await app.start(port: 9090);
 
   //Crear folder "files" si no existe
-  var files = new Directory('${path.current}/files');
+  var files = new Directory(filesPath);
   if (! await files.exists()) {
     await files.create();
   }
