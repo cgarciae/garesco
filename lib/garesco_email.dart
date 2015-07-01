@@ -31,7 +31,7 @@ String get filesPath {
       return '${path.current}/files';
     case TipoBuild.dockerTesting:
     case TipoBuild.deploy:
-      return "/files";
+      return "/data/files";
   }
 }
 

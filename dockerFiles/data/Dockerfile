@@ -1,4 +1,3 @@
 FROM busybox
-VOLUME /data/db
-VOLUME /files
+VOLUME /data
 CMD ls

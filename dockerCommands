@@ -1,21 +1,22 @@
 ## SERVER RUN##
 docker stop server && docker rm server
-docker run -d -p 80:9090 -it --name server --link rethinkdb:rethinkdb --volumes-from data cgarciae/garescoemail:0.0.13
+docker run -d -p 80:9090 -it --name server --link rethinkdb:rethinkdb --volumes-from data cgarciae/garescoemail:0.0.15
 
 ## SERVER RUN TEST##
 docker stop server && docker rm server
-docker run -d -p 9090:9090 -p 8181:8181 -it --name server --link rethinkdb:rethinkdb --volumes-from data cgarciae/garescoemail:0.0.13
+docker run -d -p 9090:9090 -p 8181:8181 -it --name server --link rethinkdb:rethinkdb --volumes-from data cgarciae/garescoemail:0.0.15
 
 ## SERVER BUILD ##
-docker build -t cgarciae/garescoemail:0.0.13 .
-docker tag -f cgarciae/garescoemail:0.0.13 cgarciae/garescoemail:latest
+docker build -t cgarciae/garescoemail:0.0.15 .
+docker tag -f cgarciae/garescoemail:0.0.15 cgarciae/garescoemail:latest
 
 ## RETHINK TEST ##
 docker stop rethinkdb && docker rm rethinkdb
 docker run -it -d --name rethinkdb -p 28015:28015 -p 8080:8080 --volumes-from data rethinkdb
 
 ## RETHINK SERVER ##
-docker run -it -d --name rethinkdb --volumes-from data rethinkdb
+docker stop rethinkdb && docker rm rethinkdb
+docker run -it -d -p 8123:8080 --name rethinkdb --volumes-from data rethinkdb
 
 ## DB TEST RUN##
 docker stop dbtest && docker rm dbtest
@@ -27,12 +28,11 @@ docker run -d -it --name db --volumes-from data mongo:2.6.7
 
 ## DATA RUN##
 docker stop data && docker rm data
-docker run -it --name data cgarciae/data:0.0.3
+docker run -it --name data cgarciae/data:0.0.6
 
 ## DATA BUILD ##
-cd "/c/Users/Cristian Garcia/Documents/GitHub/aristadart/dockerFiles/data"
-docker build -t cgarciae/data:0.0.1 .
-docker tag cgarciae/data:0.0.1 cgarciae/data:latest
+docker build -t cgarciae/data:0.0.6 .
+docker tag -f cgarciae/data:0.0.6 cgarciae/data:latest
 
 ## DATA TEST##
 docker stop datatest && docker rm datatest
