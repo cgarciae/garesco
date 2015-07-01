@@ -29,8 +29,13 @@ class FileServices extends GenericRethinkServices<FileDb> {
 
   @app.Route ('/:id')
   Future<shelf.Response> downloadFile (String id) async {
-    var metadata = await getMetadata(id);
-    return new shelf.Response.ok(readFile(id), headers: {"Content-Type": metadata.contentType});
+    try {
+      var metadata = await getMetadata(id);
+      return new shelf.Response.ok(readFile(id), headers: {"Content-Type": metadata.contentType});
+    }
+    catch (e,s) {
+      return new shelf.Response.ok("Server Error: $e \n $s");
+    }
   }
 
   Future<FileDb> insertMetadata (FileDb metadata) async {

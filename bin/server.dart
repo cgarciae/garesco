@@ -56,7 +56,13 @@ main() async {
     ..bind(TestEmail));
 
   app.setupConsoleLog();
-  app.start(port: 9090);
+  await app.start(port: 9090);
+
+  //Crear folder "files" si no existe
+  var files = new Directory('${path.current}/files');
+  if (! await files.exists()) {
+    await files.create();
+  }
 }
 
 @app.Interceptor(r'/.*')

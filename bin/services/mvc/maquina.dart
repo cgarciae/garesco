@@ -59,15 +59,22 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     HttpBodyFileUpload file = form.archivosImagenes;
     if (file != null && file is HttpBodyFileUpload && file.content.length > 0) {
       var fileDb = await fileServices.newFile(file);
+      var imagenes = 'imagenes';
 
       query = r.expr([
         query,
-        get(id).update((RqlQuery maq) => {
-          'imagenes': maq('imagenes').add([encode(fileDb)])
-        })
+        get(id).update((Var maq) =>
+        //if
+        r.branch(maq.hasFields(imagenes),
+        //then
+        {imagenes: maq(imagenes).add([encode(fileDb)])},
+        //else
+        {imagenes: [encode(fileDb)]}
+        ))
       ]);
     }
-    await query.run(conn);
+    var resp = await query.run(conn);
+
     return app.redirect("/admin/maquinas/$id");
   }
 
