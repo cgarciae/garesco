@@ -63,6 +63,7 @@ class FilaCategoria {
 }
 
 class Maquina extends Ref {
+  @Field() String get href => localHost + "maquinas/$id";
   @Field() String venta;
   @Field() String eti;
   @Field() String pais;
