@@ -25,6 +25,7 @@ import 'package:http_server/src/http_body.dart';
 part 'services/mvc/maquina.dart';
 part 'services/mvc/categoria.dart';
 part 'services/mvc/email.dart';
+part 'services/mvc/user_services.dart';
 part 'services/general/file_services.dart';
 part 'services/general/generic_rethink_services.dart';
 
@@ -33,7 +34,7 @@ main() async {
 
   var config = new ConfigRethink(
       host: partialDBHost,
-      tables: [new TableConfig(Col.maquinas), new TableConfig(Col.files)]);
+      tables: [new TableConfig(Col.maquinas), new TableConfig(Col.files), new TableConfig(Col.users)]);
   await setupRethink(config);
 
   var dbManager = new RethinkDbManager.fromCongif(config);
@@ -41,6 +42,8 @@ main() async {
   app.addPlugin(getMapperPlugin(dbManager));
   app.addPlugin(mvc.mvcPluggin);
   app.addPlugin(securityPlugin);
+  app.addPlugin(headersPlugin);
+  app.addPlugin(cookiesPlugin);
 
   app.setShelfHandler(createStaticHandler(staticFolder,
       defaultDocument: "index.html", serveFilesOutsidePath: true));
@@ -53,17 +56,65 @@ main() async {
     ..bind(FileServices)
     ..bind(AdminMaquinaController)
     ..bind(InjectableRethinkConnection)
-    ..bind(TestEmail));
+    ..bind(TestEmail)
+    ..bind(UserServices));
 
   app.setupConsoleLog();
   await app.start(port: 9090);
 
   //Crear folder "files" si no existe
   var files = new Directory(filesPath);
-  if (! await files.exists()) {
+  if (!await files.exists()) {
     await files.create();
   }
+
+  RethinkConnection conn = await dbManager.getConnection();
+  var r = new Rethinkdb();
+
+  var injector = new ModuleInjector([new Module()
+    ..bind(FileServices)
+    ..bind(AdminMaquinaController)
+    ..bind(InjectableRethinkConnection, toValue: new InjectableRethinkConnection.fromConnection(conn.conn))
+    ..bind(TestEmail)
+    ..bind(UserServices)]);
+
+  UserServices userServices = injector.get(UserServices);
+  //Crear admin si no existe
+  if ((await userServices.count().run(conn.conn)) == 0) {
+    String id = await r.uuid().run(conn.conn);
+    await userServices.addUser(new User()
+      ..id = id
+      ..password = "Garesco1234"
+      ..email = "octavio@garesco.com"
+      ..roles = ["admin"]);
+  }
+
 }
+
+@mvc.Controller('/test-header')
+testHeader (@Header("authorization") String id, @Cookie() List<String> roles) => id + roles.toString();
+
+@mvc.Controller('/test-cookie')
+testCookie (@Cookie() ck.Cookie id, @Cookie() List<String> roles) => id;
+
+@mvc.Controller('/test-set-cookie')
+testSetCookie () => app.response.change(headers: {'Set-Cookie': "id=2"});
+
+@mvc.Controller('/test-set-roles')
+testSetRoles () => app.response.change(headers: {'Set-Cookie': 'roles=admin,chao'});
+
+@mvc.Controller('/test-del-roles')
+testDelRoles () => app.response.change(headers: {'Set-Cookie': 'roles=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'});
+
+@mvc.Controller('/test-decode')
+testDecode () => new List<String>().runtimeType is List;
+
+@Roles(const ['admin'])
+@app.Route('/test')
+test() => "test";
+
+@mvc.Controller('/login')
+login() => "LOGIN";
 
 @app.Interceptor(r'/.*')
 handleResponseHeader() async {
@@ -79,24 +130,23 @@ handleResponseHeader() async {
   return app.response.change(headers: headers);
 }
 
-
 @mvc.GroupController('/email')
 class TestEmail extends RethinkServices {
   AdminMaquinaController maquinaServices;
 
-  TestEmail (this.maquinaServices) : super ('emails');
+  TestEmail(this.maquinaServices) : super('emails');
 
   @mvc.ViewController('/render', methods: const [app.POST])
   Email render(@Decode() Email email) => email;
 
   @mvc.ViewController('/render', methods: const [app.GET], ignoreMaster: true)
-  Future<Email> autoRender () async {
-     Cursor c = await maquinaServices.filter((RqlQuery m) =>
-      m('enEmail').eq(true)).run(conn);
+  Future<Email> autoRender() async {
+    Cursor c = await maquinaServices
+        .filter((RqlQuery m) => m('enEmail').eq(true))
+        .run(conn);
 
     List<Maquina> maquinas = decode(await c.toArray(), Maquina);
-    var email = (await staticEmail)
-      ..maquinas = maquinas;
+    var email = (await staticEmail)..maquinas = maquinas;
     return email;
   }
 
@@ -110,13 +160,11 @@ class TestEmail extends RethinkServices {
     return m;
   }
 
-  @Secure(level: 0)
-  @app.Route('test')
-  test() => "test";
+
 }
 
-
 Future<Email> get staticEmail async {
-  var json = await new File (path.current + '/bin/email.json').readAsString(encoding: LATIN1);
+  var json = await new File(path.current + '/bin/email.json').readAsString(
+      encoding: LATIN1);
   return decodeJson(json, Email);
 }

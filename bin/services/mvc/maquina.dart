@@ -1,10 +1,11 @@
 part of garesco.email.server;
 
+@Roles(const ['admin'], redirect: '/users/login')
 @mvc.GroupController('/admin/maquinas')
 class AdminMaquinaController extends RethinkServices<Maquina> {
   FileServices fileServices;
 
-  AdminMaquinaController(this.fileServices) : super('maquinas');
+  AdminMaquinaController(this.fileServices, InjectableRethinkConnection conn) : super.fromInjectableConnection('maquinas', conn);
   AdminMaquinaController.fromConnection(Connection conn)
       : super.fromConnection('maquinas', conn);
 

@@ -7,6 +7,7 @@ import 'package:quiver/iterables.dart' as qi;
 import 'package:path/path.dart' as path;
 
 part 'models/clases.dart';
+part 'models/user.dart';
 
 const int tipoBuild = TipoBuild.deploy;
 
@@ -75,6 +76,7 @@ class TipoBuild
 class Col {
   static const String files = 'files';
   static const String maquinas = 'maquinas';
+  static const String users = 'users';
 }
 
 DynamicMap queryMap (Map map) => new DynamicMap (map);
