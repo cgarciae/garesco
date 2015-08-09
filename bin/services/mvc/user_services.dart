@@ -25,7 +25,7 @@ class UserServices extends RethinkServices<User>  {
     var roles = foundUser.roles.reduce((a, b) => '$a,$b');
     var idCookie = new ck.Cookie('id', foundUser.id);
 
-    return app.redirect('/maquinas')
+    return app.redirect('/admin/maquinas')
       .change(headers: {'Set-Cookie': idCookie.toString()});
   }
 

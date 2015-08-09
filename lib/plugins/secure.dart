@@ -7,8 +7,8 @@ import 'package:redstone_mapper/mapper.dart';
 
 class Roles {
   final List<String> roles;
-  final String redirect;
-  const Roles (this.roles, {this.redirect});
+  final String failureRedirect;
+  const Roles (this.roles, {this.failureRedirect});
 }
 
 class Header {
@@ -33,12 +33,12 @@ void securityPlugin(app.Manager manager) {
         var conn = app.request.attributes.dbConn.conn;
         roles = await r.table('users').get(id).getField('roles').run(conn);
       }
-      catch (e,s) {}
+      catch (e) {}
 
       if (metadata.roles.any((role) => roles.contains(role)))
         return route(injector, request);
-      else if (metadata.redirect != null)
-        return app.redirect(metadata.redirect);
+      else if (metadata.failureRedirect != null)
+        return app.redirect(metadata.failureRedirect);
       else
         return "AUTHORIZATION ERROR: You don't have permission to access this resource.";
     }

@@ -1,11 +1,12 @@
 part of garesco.email.server;
 
-@Roles(const ['admin'], redirect: '/users/login')
+@Roles(const ['admin'], failureRedirect: '/users/login')
 @mvc.GroupController('/admin/maquinas')
 class AdminMaquinaController extends RethinkServices<Maquina> {
   FileServices fileServices;
 
-  AdminMaquinaController(this.fileServices, InjectableRethinkConnection conn) : super.fromInjectableConnection('maquinas', conn);
+  AdminMaquinaController(this.fileServices, InjectableRethinkConnection conn)
+      : super.fromInjectableConnection('maquinas', conn);
   AdminMaquinaController.fromConnection(Connection conn)
       : super.fromConnection('maquinas', conn);
 
@@ -65,13 +66,12 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
       query = r.expr([
         query,
         get(id).update((Var maq) =>
-        //if
-        r.branch(maq.hasFields(imagenes),
-        //then
-        {imagenes: maq(imagenes).add([encode(fileDb)])},
-        //else
-        {imagenes: [encode(fileDb)]}
-        ))
+            //if
+            r.branch(maq.hasFields(imagenes),
+                //then
+                {imagenes: maq(imagenes).add([encode(fileDb)])},
+                //else
+                {imagenes: [encode(fileDb)]}))
       ]);
     }
     var resp = await query.run(conn);
@@ -95,10 +95,28 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   }
 
   @mvc.DefaultViewController(subpath: '/todas', methods: const [app.GET])
-  Future<List<Maquina>> viewTodas() async {
-    Cursor result = await this.run(conn);
+  Future<Map> viewTodas({@app.QueryParam() String eti,
+      @app.QueryParam() String modelo, @app.QueryParam() String pais}) async {
+    Cursor result = await filter((Var maquina) {
+      RqlQuery cond = r.expr(true);
+      if (eti != null && eti != '') {
+        cond = cond.and(maquina('eti').match(eti));
+      }
+      if (modelo != null && modelo != '') {
+        cond = cond.and(maquina('modelo').match(modelo));
+      }
+      if (pais != null && pais != '') {
+        cond = cond.and(maquina('pais').match(pais));
+      }
+      return cond;
+    }).run(conn);
     List<Map> list = await result.toArray();
-    return list.map((m) => decode(m, Maquina)).toList();
+    return {
+      'eti': eti,
+      'modelo': modelo,
+      'pais': pais,
+      'maquinas': list.map((m) => decode(m, Maquina)).toList()
+    };
   }
 
   @mvc.Controller('/:id/eliminar', methods: const [app.POST, app.DELETE])
@@ -115,6 +133,12 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     return app.redirect('/admin/maquinas');
   }
 
+  @mvc.Controller('/limpiar-email')
+  limpiarEmail() async {
+    await update({'enEmail': false}).run(conn);
+    return app.redirect('/admin/maquinas');
+  }
+
   processForm(DynamicMap form) {
     form.enEmail = form.enEmail == "true";
   }
@@ -127,7 +151,9 @@ class MaquinaController extends RethinkServices<Maquina> {
   MaquinaController(this.adminMaquinaController) : super('maquinas');
 
   @mvc.DefaultViewController(subpath: '/todas')
-  maquinas() => adminMaquinaController.viewTodas();
+  maquinas({@app.QueryParam() String eti, @app.QueryParam() String modelo,
+          @app.QueryParam() String pais}) =>
+      adminMaquinaController.viewTodas(eti: eti, pais: pais, modelo: modelo);
 
   @mvc.ViewController('/:id', localPath: '/maquina')
   getMaquina(String id) => adminMaquinaController.getMaquina(id);

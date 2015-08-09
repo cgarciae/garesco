@@ -1,0 +1,12 @@
+data:
+  image: busybox
+  volumes:
+   - /data:/data
+
+rethinkdb:
+  image: rethinkdb
+  volumes_from:
+   - data
+  ports:
+   - "28015:28015"
+   - "8080:8080"

@@ -9,7 +9,7 @@ import 'package:path/path.dart' as path;
 part 'models/clases.dart';
 part 'models/user.dart';
 
-const int tipoBuild = TipoBuild.deploy;
+const int tipoBuild = TipoBuild.desarrollo;
 
 int get port => 9090;
 
