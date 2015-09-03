@@ -6,7 +6,7 @@
   "categorias":
   [
     {
-      "urlIcono": "/images/soplado.png",
+      "urlIcono": "http://45.55.88.247/images/soplado.png",
       "heading": "Soplado / PET",
       "descripcion": "Acumulador / Continua / Cabezal / Estirado y Soplado  ",
       "link": {
@@ -14,7 +14,7 @@
       }
     },
     {
-      "urlIcono": "/images/inyeccion.png",
+      "urlIcono": "http://45.55.88.247/images/inyeccion.png",
       "heading": "Inyeccion",
       "descripcion": "Horizontal / Vertical / Preformas",
       "link": {
@@ -22,7 +22,7 @@
       }
     },
     {
-      "urlIcono": "/images/termoformado.png",
+      "urlIcono": "http://45.55.88.247/images/termoformado.png",
       "heading": "Termoformado",
       "descripcion": "Presion / Vacio",
       "link":
