@@ -58,7 +58,7 @@ String get partialDBHost {
   {
     case TipoBuild.desarrollo:
     case TipoBuild.jsTesting:
-      return "192.168.59.103";
+      return "192.168.99.100";
     case TipoBuild.dockerTesting:
     case TipoBuild.deploy:
       return "rethinkdb";

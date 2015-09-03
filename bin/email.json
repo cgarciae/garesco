@@ -6,7 +6,7 @@
   "categorias":
   [
     {
-      "urlIcono": "http://cdn.flaticon.com/png/256/33768.png",
+      "urlIcono": "/images/soplado.png",
       "heading": "Soplado / PET",
       "descripcion": "Acumulador / Continua / Cabezal / Estirado y Soplado  ",
       "link": {
@@ -14,7 +14,7 @@
       }
     },
     {
-      "urlIcono": "http://cdn.flaticon.com/png/256/66095.png",
+      "urlIcono": "/images/inyeccion.png",
       "heading": "Inyeccion",
       "descripcion": "Horizontal / Vertical / Preformas",
       "link": {
@@ -22,7 +22,7 @@
       }
     },
     {
-      "urlIcono": "http://cdn.flaticon.com/png/256/74327.png",
+      "urlIcono": "/images/termoformado.png",
       "heading": "Termoformado",
       "descripcion": "Presion / Vacio",
       "link":

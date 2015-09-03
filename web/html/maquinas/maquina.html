@@ -1,6 +1,8 @@
 
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
       rel="stylesheet">
+<link href="/css/jquery.bxslider.css" rel="stylesheet" />
+<script src="/js/jquery.bxslider.js"></script>
 
 <div class="section no-pad-bot container" id="index-banner">
     <div id="data-form" class="col s12" enctype="multipart/form-data" method="post">
@@ -65,16 +67,19 @@
 
                             <!-- Modal Structure -->
                             <div id="modal1" class="modal">
-                                <div class="modal-content container">
-                                    <div class="slider" style="height: 410px;">
-                                        <ul class="slides" style="height: 380px;">
-                                            {{# imagenes}}
-                                            <li>
-                                                <img src="{{href}}" style="height: 100%;">
-                                            </li>
-                                            {{/ imagenes}}
-                                        </ul>
+                                <div class="modal-content">
+                                    {{# imagenes}}
+                                    <div class="row">
+                                        <div class="col s12 s12">
+                                            <div class="card">
+                                                <div class="card-image">
+                                                    <img src="{{href}}">
+                                                    <span class="card-title">{{filename}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
+                                    {{/ imagenes}}
                                 </div>
                                 <!--div class="modal-footer">
                                     <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Agree</a>
@@ -141,5 +146,9 @@
             full_width: false,
             height: 400
         });
+    });
+
+    $(document).ready(function(){
+        $('.bxslider').bxSlider();
     });
 </script>
