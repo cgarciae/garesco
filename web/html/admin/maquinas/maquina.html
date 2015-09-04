@@ -3,7 +3,7 @@
       rel="stylesheet">
 
 <div class="section no-pad-bot container" id="index-banner">
-    <form id="data-form" class="col s12" enctype="multipart/form-data" method="post">
+    <form id="data-form" name="data-form" class="col s12" enctype="multipart/form-data" method="post">
         <br><br>
 
         <div class="row">
@@ -44,7 +44,7 @@
                         </li>
 
                         <li class="input-field col s12">
-                            <input type="checkbox" id="enEmail" name="enEmail" value="true"
+                            <input type="checkbox" id="enEmail" name="enEmail"
                                    {{#enEmail}} checked {{/enEmail}}/>
                             <label for="enEmail">Mostrar en email</label>
                             <br/><br/><br/>
@@ -62,7 +62,7 @@
                             <input class="file-path validate" type="text"/>
                             <div class="btn">
                                 <span>File</span>
-                                <input id="archivosImagenes" type="file" class="validate" name="archivosImagenes" />
+                                <input id="archivosImagenes" type="file" class="validate" name="archivosImagenes" multiple/>
                             </div>
                         </div>
 
@@ -171,7 +171,6 @@
 <script src="/js/materialize.min.js"></script>
 
 <script>
-
     $(document).ready(function(){
         // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
         $('.modal-trigger').leanModal();
@@ -180,4 +179,57 @@
     $(document).ready(function(){
         $('.slider').slider({full_width: true});
     });
+
+    var form = document.getElementById('data-form');
+
+
+    form.onsubmit = function(event) {
+        event.preventDefault();
+
+
+        var files = form["archivosImagenes"].files;
+
+        // Create a new FormData object.
+        var formData = new FormData();
+
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+
+            // Check the file type.
+            if (!file.type.match('image.*')) {
+                continue;
+            }
+            console.log(file);
+            // Add the file to the request.
+            formData.append('file' + i, file);
+        }
+
+        var inputs = form.getElementsByTagName("input");
+        for (i = 0; i < inputs.length; i++) {
+            if (inputs[i].id == "archivosImagenes")
+                continue;
+            else if (inputs[i].type == "checkbox")
+                formData.append(inputs[i].id, inputs[i].checked);
+            else
+                formData.append(inputs[i].id, inputs[i].value);
+        }
+
+        // Set up the request.
+        var url = window.location.pathname;
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', url, true);
+
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                window.location.href = xhr.responseText;
+            } else {
+                alert('An error occurred!');
+            }
+        };
+
+        xhr.send(formData);
+    }
+
 </script>

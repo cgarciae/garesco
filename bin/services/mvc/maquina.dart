@@ -23,23 +23,23 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   Future<shelf.Response> agregar(@app.Body(app.FORM) DynamicMap form) async {
     processForm(form);
     Maquina maquina = decode(form, Maquina);
+    maquina.imagenes = [];
     maquina.id = new uuid.Uuid().v1();
 
-    HttpBodyFileUpload file = form.archivosImagenes;
-    if (file != null && file is HttpBodyFileUpload && file.content.length > 0) {
+    var files = form.values.where((file) => file is HttpBodyFileUpload && file.content.length > 0);
+    for (var file in files) {
       var fileDb = await fileServices.newFile(file);
-      maquina.imagenes = [fileDb];
+      maquina.imagenes.add(fileDb);
     }
 
     await insertNow(maquina);
 
-    return app.redirect("/admin/maquinas/${maquina.id}");
+    return new shelf.Response.ok("/admin/maquinas/${maquina.id}");
   }
 
   @mvc.ViewController("/:id",
       localPath: '/maquina',
-      methods: const [app.GET],
-      allowMultipartRequest: true)
+      methods: const [app.GET])
   Future<Maquina> getMaquina(String id) async {
     Maquina maquina = await getNow(id);
 
@@ -58,8 +58,9 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     Maquina maquina = decode(form, Maquina);
     RqlQuery query = updateTyped(id, maquina);
 
-    HttpBodyFileUpload file = form.archivosImagenes;
-    if (file != null && file is HttpBodyFileUpload && file.content.length > 0) {
+    var files = form.values.where((file) => file is HttpBodyFileUpload && file.content.length > 0);
+    for (var file in files) {
+
       var fileDb = await fileServices.newFile(file);
       var imagenes = 'imagenes';
 
@@ -76,7 +77,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     }
     var resp = await query.run(conn);
 
-    return app.redirect("/admin/maquinas/$id");
+    return new shelf.Response.ok("/admin/maquinas/$id");
   }
 
   @mvc.Controller('/:id/imagenes/:idImagen/eliminar', methods: const [app.GET])
