@@ -115,7 +115,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
 
     print(result);
 
-    //List<Map> list = await result.toArray();
+    List<Map> list = await result.toArray();
     //print(list);
 
     return {
