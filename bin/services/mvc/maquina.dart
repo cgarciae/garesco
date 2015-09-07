@@ -115,14 +115,14 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
 
     print(result);
 
-    List<Map> list = await result.toArray();
-    print(list);
+    //List<Map> list = await result.toArray();
+    //print(list);
 
     return {
       'eti': eti,
       'modelo': modelo,
       'pais': pais,
-      'maquinas': list.map((m) => decode(m, Maquina)).toList()
+      'maquinas': [] //list.map((m) => decode(m, Maquina)).toList()
     };
   }
 
