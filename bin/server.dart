@@ -59,7 +59,7 @@ main() async {
     ..bind(TestEmail)
     ..bind(UserServices));
 
-  app.setupConsoleLog();
+  app.setupConsoleLog(Level.ALL);
   await app.start(port: 9090);
 
   //Crear folder "files" si no existe

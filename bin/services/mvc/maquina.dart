@@ -98,6 +98,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
   @mvc.DefaultViewController(subpath: '/todas', methods: const [app.GET])
   Future<Map> viewTodas({@app.QueryParam() String eti,
       @app.QueryParam() String modelo, @app.QueryParam() String pais}) async {
+
     Cursor result = await filter((Var maquina) {
       RqlQuery cond = r.expr(true);
       if (eti != null && eti != '') {
@@ -111,7 +112,9 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
       }
       return cond;
     }).run(conn);
+
     List<Map> list = await result.toArray();
+
     return {
       'eti': eti,
       'modelo': modelo,
