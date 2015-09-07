@@ -118,7 +118,7 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     List<Maquina> list = [];
     result.forEach((m) {
       try {
-        return decode(m, Maquina);
+        list.add(decode(m, Maquina));
       }
       catch (e) {
         print(m);
