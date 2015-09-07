@@ -113,7 +113,10 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
       return cond;
     }).run(conn);
 
+    print(result);
+
     List<Map> list = await result.toArray();
+    print(list);
 
     return {
       'eti': eti,
