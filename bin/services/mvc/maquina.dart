@@ -115,7 +115,8 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
 
     print(result);
 
-    List<Maquina> list = result.map((m) {
+    List<Maquina> list = [];
+    result.forEach((m) {
       try {
         return decode(m, Maquina);
       }
@@ -123,14 +124,14 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
         print(m);
         return new Maquina();
       }
-    }).toList();
+    });
     //print(list);
 
     return {
       'eti': eti,
       'modelo': modelo,
       'pais': pais,
-      'maquinas': [] //list.map((m) => decode(m, Maquina)).toList()
+      'maquinas': list //list.map((m) => decode(m, Maquina)).toList()
     };
   }
 
