@@ -119,11 +119,13 @@ class AdminMaquinaController extends RethinkServices<Maquina> {
     result.forEach((m) {
       try {
         list.add(decode(m, Maquina));
-        print(m);
+        //print(m);
       }
       catch (e) {
-        print(m);
-        return new Maquina();
+        //print(m);
+        return new Maquina()
+        ..modelo = "ERROR"
+        ..id = m['id'];
       }
     });
     //print(list);
