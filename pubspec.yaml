@@ -12,7 +12,7 @@ dependencies:
   rethinkdb_driver: 2.0.1+1
   postgresql: any
   uuid: any
-  redstone_mvc: '>=0.1.0-beta.1+8'
+  redstone_mvc: '0.1.0-beta.1+8'
   shelf: '>=0.6.0 <0.7.0'
   shelf_static: any
   di: any
