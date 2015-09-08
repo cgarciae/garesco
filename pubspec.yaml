@@ -9,7 +9,7 @@ dependencies:
   redstone_mapper: '>=0.2.0-beta.1 < 0.3.0'
   redstone_rethinkdb: '>=0.1.0-beta.1+1'
   redstone_mapper_mongo: '>=0.2.0-beta.1'
-  rethinkdb_driver: ^2.0.1+1
+  rethinkdb_driver: 2.0.1+1
   postgresql: any
   uuid: any
   redstone_mvc: '>=0.1.0-beta.1+8'
